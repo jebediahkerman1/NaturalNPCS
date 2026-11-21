@@ -21,8 +21,7 @@ public class NpcStickItem extends Item {
         Level level = context.getLevel();
         if (!level.isClientSide) {
             BlockPos spawnPos = context.getClickedPos().relative(context.getClickedFace());
-            spawnNpc(level, spawnPos.getX() + 0.5D, spawnPos.getY(), spawnPos.getZ() + 0.5D,
-                    context.getPlayer());
+            spawnNpc(level, spawnPos.getX() + 0.5D, spawnPos.getY(), spawnPos.getZ() + 0.5D);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -35,15 +34,15 @@ public class NpcStickItem extends Item {
             double x = player.getX() + look.x * 2.0D;
             double y = player.getY();
             double z = player.getZ() + look.z * 2.0D;
-            spawnNpc(level, x, y, z, player);
+            spawnNpc(level, x, y, z);
         }
         return net.minecraft.world.InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
     }
 
-    private void spawnNpc(Level level, double x, double y, double z, Player player) {
+    private void spawnNpc(Level level, double x, double y, double z) {
         NaturalNpcEntity npc = ModEntities.NATURAL_NPC.get().create(level);
         if (npc == null) return;
-
+        npc.chooseRandomSkin();
         npc.moveTo(x, y, z, level.random.nextFloat() * 360.0F, 0.0F);
         level.addFreshEntity(npc);
     }
