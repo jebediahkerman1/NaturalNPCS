@@ -2,14 +2,12 @@
 
 A Minecraft Forge mod that adds player-like civilian NPCs who wander around the world.
 
-## Planned features
+## Current prototype
 
-- Random player skins selected from `assets/naturalnpcs/textures/entity/skins/`.
-- Supports a collection of 10–30 PNG skins.
-- No visible nametags.
-- Random wandering, occasional pauses, and natural-looking head turns.
-- Natural world spawning with configurable spawn density.
-- Skin assignments remain consistent for each NPC.
+- **NPC Stick:** a normal Minecraft stick texture named "NPC Stick".
+- Right-click a block to spawn an NPC on the clicked face.
+- Right-click the air to spawn an NPC a short distance in front of you.
+- NPCs wander, look around, and have no visible nametags.
 
 ## Development target
 
@@ -17,14 +15,21 @@ A Minecraft Forge mod that adds player-like civilian NPCs who wander around the 
 - Minecraft Forge 47.x
 - Java 17
 
-## Adding skins
+## Planned features
 
-Place standard 64×64 Minecraft player skin PNG files in:
+- Random player skins selected from a dedicated collection of 10–30 PNG files.
+- Persistent skin assignments for each NPC.
+- Natural world spawning with configurable population density.
+- More natural pedestrian behaviours.
+
+## Skin folder (planned)
+
+The intended skin folder is:
 
 `src/main/resources/assets/naturalnpcs/textures/entity/skins/`
 
-Use filenames such as `skin_01.png`, `skin_02.png`, and so on. Keep between 10 and 30 skins in the folder. The mod is being developed to discover the available skins automatically.
+Use standard 64×64 Minecraft player skin PNG files named `skin_01.png`, `skin_02.png`, and so on. Automatic skin discovery and per-NPC skin selection are not implemented yet.
 
-## Status
+## Build
 
-Early development. Features and setup instructions will be updated as the first playable build is implemented.
+Import this repository as a Gradle project in an IDE with Java 17, or run the Gradle `build` task. The mod JAR will be generated in `build/libs/`.
