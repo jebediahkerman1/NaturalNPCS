@@ -7,9 +7,9 @@ import com.naturalnpcs.entity.NaturalNpcEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,19 +31,21 @@ public class ClientModEvents {
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             SKIN_TEXTURES.clear();
-            List<Path> skins = SkinFiles.listSkins();
+            List<String> skins = SkinFiles.listSkins();
+
             for (int i = 0; i < skins.size(); i++) {
-                Path file = skins.get(i);
-                try (InputStream input = java.nio.file.Files.newInputStream(file)) {
+                String fileName = skins.get(i);
+                try (InputStream input = SkinFiles.openSkin(fileName)) {
+                    if (input == null) continue;
                     NativeImage image = NativeImage.read(input);
-                    ResourceLocation id = new ResourceLocation(NaturalNPCs.MOD_ID, "external_skins/skin_" + i);
+                    ResourceLocation id = new ResourceLocation(NaturalNPCs.MOD_ID, "preset_skins/skin_" + i);
                     Minecraft.getInstance().getTextureManager().register(id, new DynamicTexture(image));
                     SKIN_TEXTURES.add(id);
                 } catch (Exception exception) {
-                    NaturalNPCs.LOGGER.error("Could not load NPC skin: {}", file, exception);
+                    NaturalNPCs.LOGGER.error("Could not load built-in NPC skin: {}", fileName, exception);
                 }
             }
-            NaturalNPCs.LOGGER.info("Loaded {} Natural NPC skin(s) from {}", SKIN_TEXTURES.size(), SkinFiles.getSkinDirectory());
+            NaturalNPCs.LOGGER.info("Loaded {} built-in Natural NPC preset skin(s).", SKIN_TEXTURES.size());
         });
     }
 
