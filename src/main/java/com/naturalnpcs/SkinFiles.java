@@ -1,35 +1,28 @@
 package com.naturalnpcs;
 
-import net.minecraftforge.fml.loading.FMLPaths;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Stream;
 
 public final class SkinFiles {
+    private static final int MAX_PRESET_SKINS = 30;
+
     private SkinFiles() {}
 
-    public static Path getSkinDirectory() {
-        return FMLPaths.GAMEDIR.get().resolve("config").resolve("naturalnpcs").resolve("skins");
+    public static List<String> listSkins() {
+        List<String> skins = new ArrayList<>();
+        for (int i = 1; i <= MAX_PRESET_SKINS; i++) {
+            String name = "skin" + i + ".png";
+            try (InputStream input = NaturalNPCs.class.getResourceAsStream("/skins/" + name)) {
+                if (input != null) skins.add(name);
+            } catch (Exception exception) {
+                NaturalNPCs.LOGGER.error("Could not check built-in NPC skin {}", name, exception);
+            }
+        }
+        return skins;
     }
 
-    public static List<Path> listSkins() {
-        Path directory = getSkinDirectory();
-        try {
-            Files.createDirectories(directory);
-            try (Stream<Path> files = Files.list(directory)) {
-                return files.filter(Files::isRegularFile)
-                        .filter(path -> path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".png"))
-                        .sorted(Comparator.comparing(path -> path.getFileName().toString().toLowerCase(Locale.ROOT)))
-                        .toList();
-            }
-        } catch (IOException exception) {
-            NaturalNPCs.LOGGER.error("Could not read Natural NPCs skin folder: {}", directory, exception);
-            return List.of();
-        }
+    public static InputStream openSkin(String fileName) {
+        return NaturalNPCs.class.getResourceAsStream("/skins/" + fileName);
     }
 }
